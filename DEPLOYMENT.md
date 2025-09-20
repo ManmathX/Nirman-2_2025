@@ -42,7 +42,7 @@ git push -u origin main
 
 4. **Configure Project Settings**
    ```
-   Project Name: nirman-2-2025
+   Project Name: nirman2025
    Framework Preset: Other (or Create React App)
    Root Directory: . (leave empty - use root)
    Build Command: (leave empty - Vercel will auto-detect)
@@ -56,14 +56,14 @@ git push -u origin main
    MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission
    NODE_ENV = production
    PORT = 5000
-   REACT_APP_API_URL = https://nirman-2-2025.vercel.app/api
-   ALLOWED_ORIGINS = https://nirman-2-2025.vercel.app
+   REACT_APP_API_URL = https://nirman2025.vercel.app/api
+   ALLOWED_ORIGINS = https://nirman2025.vercel.app
    ```
 
 6. **Deploy**
    - Click "Deploy"
    - Wait for deployment to complete
-   - **Your app will be available at**: `https://nirman-2-2025.vercel.app`
+   - **Your app will be available at**: `https://nirman2025.vercel.app`
 
 > **💡 How it works**: Vercel will automatically detect your monorepo structure using the root `vercel.json` file. It will:
 > - Deploy the React frontend from the `client/` directory
@@ -73,7 +73,7 @@ git push -u origin main
 
 ### **Step 3: Test Your Deployment**
 
-1. **Visit your app URL**: `https://nirman-2-2025.vercel.app`
+1. **Visit your app URL**: `https://nirman2025.vercel.app`
 2. **Test the submission form** with all fields
 3. **Check if submissions appear** in the table
 4. **Verify file upload** is working
@@ -85,8 +85,8 @@ git push -u origin main
 MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission
 NODE_ENV = production
 PORT = 5000
-REACT_APP_API_URL = https://nirman-2-2025.vercel.app/api
-ALLOWED_ORIGINS = https://nirman-2-2025.vercel.app
+REACT_APP_API_URL = https://nirman2025.vercel.app/api
+ALLOWED_ORIGINS = https://nirman2025.vercel.app
 ```
 
 ## ✅ **Deployment Checklist**
@@ -140,10 +140,10 @@ ALLOWED_ORIGINS = https://nirman-2-2025.vercel.app
 ## 📱 **Your Final URLs**
 
 After successful deployment, you'll have:
-- **Main App**: `https://nirman-2-2025.vercel.app`
-- **API Endpoint**: `https://nirman-2-2025.vercel.app/api`
-- **Frontend**: `https://nirman-2-2025.vercel.app` (same as main app)
-- **Backend**: `https://nirman-2-2025.vercel.app/api` (API routes)
+- **Main App**: `https://nirman2025.vercel.app`
+- **API Endpoint**: `https://nirman2025.vercel.app/api`
+- **Frontend**: `https://nirman2025.vercel.app` (same as main app)
+- **Backend**: `https://nirman2025.vercel.app/api` (API routes)
 
 ## 🎉 **Success!**
 

@@ -15,6 +15,7 @@ git push -u origin main
 2. Click "New Project"
 3. Import: `ManmathX/Nirman-2_2025`
 4. Settings:
+   - **Project Name**: nirman2025
    - **Root Directory**: `.` (leave empty)
    - **Framework**: Other (or Create React App)
    - **Build Command**: (leave empty)
@@ -23,14 +24,14 @@ git push -u origin main
    MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission
    NODE_ENV = production
    PORT = 5000
-   REACT_APP_API_URL = https://nirman-2-2025.vercel.app/api
-   ALLOWED_ORIGINS = https://nirman-2-2025.vercel.app
+   REACT_APP_API_URL = https://nirman2025.vercel.app/api
+   ALLOWED_ORIGINS = https://nirman2025.vercel.app
    ```
 6. Deploy
 
 ## ✅ **Final URLs**
-- **Main App**: `https://nirman-2-2025.vercel.app`
-- **API**: `https://nirman-2-2025.vercel.app/api`
+- **Main App**: `https://nirman2025.vercel.app`
+- **API**: `https://nirman2025.vercel.app/api`
 
 ## 🎯 **Test**
 1. Visit main app URL
