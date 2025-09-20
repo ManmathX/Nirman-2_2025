@@ -1,100 +1,49 @@
 #!/bin/bash
 
-# Niman2.0 Platform - Vercel Deployment Script
+# Nirman-2_2025 Deployment Script
+echo "🚀 Starting Nirman-2_2025 Deployment Process..."
 
-set -e
-
-echo "🚀 Starting Niman2.0 Platform deployment to Vercel..."
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Check if Vercel CLI is installed
-if ! command -v vercel &> /dev/null; then
-    echo -e "${RED}❌ Vercel CLI is not installed.${NC}"
-    echo -e "${YELLOW}📦 Installing Vercel CLI...${NC}"
-    npm install -g vercel
-fi
-
-# Check if we're in the right directory
-if [ ! -f "vercel.json" ]; then
-    echo -e "${RED}❌ vercel.json not found. Please run this script from the project root.${NC}"
-    exit 1
-fi
-
-echo -e "${BLUE}🔍 Checking project structure...${NC}"
-
-# Verify client directory
-if [ ! -d "client" ]; then
-    echo -e "${RED}❌ Client directory not found${NC}"
-    exit 1
-fi
-
-# Verify server API directory
-if [ ! -d "server/api" ]; then
-    echo -e "${RED}❌ Server API directory not found${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}✅ Project structure verified${NC}"
-
-# Install dependencies
-echo -e "${BLUE}📦 Installing dependencies...${NC}"
-
-# Install client dependencies
-echo -e "${YELLOW}Installing client dependencies...${NC}"
-cd client
-npm ci
-cd ..
-
-# Install server dependencies
-echo -e "${YELLOW}Installing server dependencies...${NC}"
-cd server
-npm ci
-cd ..
-
-echo -e "${GREEN}✅ Dependencies installed${NC}"
-
-# Build client for production
-echo -e "${BLUE}🏗️ Building client for production...${NC}"
-cd client
-npm run build:vercel
-cd ..
-
-echo -e "${GREEN}✅ Client build completed${NC}"
-
-# Deploy to Vercel
-echo -e "${BLUE}🚀 Deploying to Vercel...${NC}"
-
-# Check if this is the first deployment
-if [ ! -f ".vercel/project.json" ]; then
-    echo -e "${YELLOW}📝 First time deployment - you'll need to configure the project${NC}"
-    vercel --prod
+# Check if git is initialized
+if [ ! -d ".git" ]; then
+    echo "📦 Initializing Git repository..."
+    git init
+    git add .
+    git commit -m "Initial commit - Nirman-2_2025 submission portal"
+    git branch -M main
+    git remote add origin https://github.com/ManmathX/Nirman-2_2025.git
+    echo "✅ Git repository initialized"
 else
-    echo -e "${YELLOW}🔄 Redeploying existing project${NC}"
-    vercel --prod
+    echo "📝 Adding changes to Git..."
+    git add .
+    git commit -m "Update: $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "✅ Changes committed"
 fi
 
-echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
+# Push to GitHub
+echo "🌐 Pushing to GitHub..."
+git push -u origin main
+echo "✅ Code pushed to GitHub"
 
-# Get deployment URL
-DEPLOYMENT_URL=$(vercel ls --scope=$(vercel whoami) | grep niman2-platform | head -1 | awk '{print $2}')
-
-if [ ! -z "$DEPLOYMENT_URL" ]; then
-    echo -e "${GREEN}🌐 Your application is live at: https://$DEPLOYMENT_URL${NC}"
-    echo -e "${BLUE}📊 API Health Check: https://$DEPLOYMENT_URL/api/health${NC}"
-else
-    echo -e "${YELLOW}⚠️ Could not retrieve deployment URL. Check your Vercel dashboard.${NC}"
-fi
-
-echo -e "${BLUE}📋 Next steps:${NC}"
-echo -e "1. Set up your MongoDB Atlas database"
-echo -e "2. Configure environment variables in Vercel dashboard"
-echo -e "3. Test your API endpoints"
-echo -e "4. Set up custom domain (optional)"
-
-echo -e "${GREEN}✨ Deployment script completed!${NC}"
+echo ""
+echo "🎉 Deployment preparation complete!"
+echo ""
+echo "📋 Next steps for Vercel deployment:"
+echo ""
+echo "1. 🌐 Go to https://vercel.com/dashboard"
+echo "2. 📥 Click 'New Project' and import from GitHub"
+echo "3. 🔧 Select repository: ManmathX/Nirman-2_2025"
+echo ""
+echo "📦 SINGLE PROJECT DEPLOYMENT:"
+echo "   - Root Directory: . (leave empty)"
+echo "   - Framework: Other (or Create React App)"
+echo "   - Build Command: (leave empty)"
+echo "   - Environment Variables:"
+echo "     MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission"
+echo "     NODE_ENV = production"
+echo "     PORT = 5000"
+echo "     REACT_APP_API_URL = https://nirman-2-2025.vercel.app/api"
+echo "     ALLOWED_ORIGINS = https://nirman-2-2025.vercel.app"
+echo ""
+echo "🎯 Your app will be available at: https://nirman-2-2025.vercel.app"
+echo "🔗 Your repository: https://github.com/ManmathX/Nirman-2_2025"
+echo "📖 Full deployment guide: Check DEPLOYMENT.md"

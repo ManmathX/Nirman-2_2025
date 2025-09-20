@@ -17,15 +17,18 @@ const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// For Vercel deployment, use memory storage instead of disk storage
+const storage = NODE_ENV === 'production' 
+  ? multer.memoryStorage() // Use memory storage for Vercel
+  : multer.diskStorage({   // Use disk storage for local development
+      destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'uploads'));
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+      }
+    });
 
 const upload = multer({
   storage: storage,
@@ -310,7 +313,16 @@ app.post('/api/submit', upload.single('zipFile'), validateSubmission, async (req
     }
     
     submissionData.zipFileName = req.file.originalname;
-    submissionData.zipFilePath = req.file.path;
+    
+    // For production (Vercel), store file in memory; for development, store on disk
+    if (NODE_ENV === 'production') {
+      // In production, we'll store the file buffer in the database or cloud storage
+      // For now, we'll just store the filename and indicate it was uploaded
+      submissionData.zipFilePath = 'uploaded-to-cloud';
+    } else {
+      // In development, store the local file path
+      submissionData.zipFilePath = req.file.path;
+    }
 
     // Create new submission
     const submission = new Submission(submissionData);

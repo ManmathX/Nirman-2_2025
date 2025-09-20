@@ -1,199 +1,217 @@
-# Niman2.0 Platform - Vercel Deployment Guide
+# 🚀 Vercel Deployment Configuration Guide
 
-## 🚀 Quick Deployment
+## 📁 Vercel Configuration Files
 
-### Prerequisites
-- [Vercel CLI](https://vercel.com/cli) installed globally: `npm i -g vercel`
-- MongoDB Atlas account for database
-- GitHub repository (recommended)
+### 1. **Root Level (`vercel.json`)**
+- **Purpose**: Deploy both frontend and backend as a single project
+- **Use Case**: When you want everything in one Vercel project
+- **Configuration**: Monorepo setup with separate builds
 
-### 1. Database Setup (MongoDB Atlas)
+### 2. **Backend (`server/vercel.json`)**
+- **Purpose**: Deploy only the backend API
+- **Use Case**: Separate backend deployment
+- **Configuration**: Node.js serverless functions
 
-1. Create a MongoDB Atlas account at [mongodb.com/atlas](https://www.mongodb.com/atlas)
-2. Create a new cluster (free tier available)
-3. Create a database user with read/write permissions
-4. Get your connection string (replace `<password>` with your actual password):
+### 3. **Frontend (`client/vercel.json`)**
+- **Purpose**: Deploy only the frontend React app
+- **Use Case**: Separate frontend deployment
+- **Configuration**: Static site generation
+
+## 🎯 **Recommended Deployment Strategy**
+
+### **Option 1: Separate Projects (Recommended)**
+
+#### **Backend Deployment:**
+1. **Project Settings:**
    ```
-   mongodb+srv://username:<password>@cluster.mongodb.net/niman2-production?retryWrites=true&w=majority
+   Framework Preset: Other
+   Root Directory: server
+   Build Command: npm install
+   Output Directory: . (empty)
+   Install Command: npm install
    ```
 
-### 2. Environment Variables
+2. **Environment Variables:**
+   ```
+   MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission
+   NODE_ENV = production
+   PORT = 5000
+   ALLOWED_ORIGINS = https://your-frontend-domain.vercel.app
+   ```
 
-Set these environment variables in your Vercel dashboard:
+#### **Frontend Deployment:**
+1. **Project Settings:**
+   ```
+   Framework Preset: Create React App
+   Root Directory: client
+   Build Command: npm run build
+   Output Directory: build
+   Install Command: npm install
+   ```
 
-#### Required Variables:
-```bash
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/niman2-production?retryWrites=true&w=majority
-NODE_ENV=production
+2. **Environment Variables:**
+   ```
+   REACT_APP_API_URL = https://your-backend-domain.vercel.app/api
+   ```
+
+### **Option 2: Single Project (Monorepo)**
+
+1. **Project Settings:**
+   ```
+   Framework Preset: Other
+   Root Directory: . (root)
+   Build Command: (leave empty)
+   Output Directory: (leave empty)
+   Install Command: (leave empty)
+   ```
+
+2. **Environment Variables:**
+   ```
+   MONGODB_URI = mongodb+srv://codemaverick143:codemaverick143@submission.7xzuzqm.mongodb.net/?retryWrites=true&w=majority&appName=Submission
+   NODE_ENV = production
+   REACT_APP_API_URL = https://your-domain.vercel.app/api
+   ```
+
+## 🔧 **Configuration Details**
+
+### **Backend Configuration (`server/vercel.json`)**
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "index.js": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"]
+}
 ```
 
-#### Optional Variables:
-```bash
-ALLOWED_ORIGINS=https://your-domain.vercel.app
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
+### **Frontend Configuration (`client/vercel.json`)**
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
 ```
 
-### 3. Deploy to Vercel
+## 🚀 **Step-by-Step Deployment**
 
-#### Option A: Deploy via GitHub (Recommended)
+### **For Separate Projects (Recommended):**
 
-1. Push your code to GitHub
-2. Connect your GitHub repository to Vercel
-3. Vercel will automatically deploy on every push to main branch
+1. **Deploy Backend:**
+   - Create new Vercel project
+   - Set root directory to `server`
+   - Add backend environment variables
+   - Deploy and copy URL
 
-#### Option B: Deploy via Vercel CLI
+2. **Deploy Frontend:**
+   - Create new Vercel project
+   - Set root directory to `client`
+   - Add frontend environment variables with backend URL
+   - Deploy and copy URL
 
-```bash
-# Login to Vercel
-vercel login
+3. **Update CORS:**
+   - Go back to backend project
+   - Update `ALLOWED_ORIGINS` with frontend URL
+   - Redeploy backend
 
-# Deploy from project root
-vercel
+### **For Single Project:**
 
-# Follow the prompts:
-# - Set up and deploy? Yes
-# - Which scope? (Select your account)
-# - Link to existing project? No
-# - Project name: niman2-platform
-# - Directory: ./
-```
+1. **Deploy Monorepo:**
+   - Create new Vercel project
+   - Use root directory
+   - Add all environment variables
+   - Deploy
 
-### 4. Configure Environment Variables
+## 🔍 **Troubleshooting**
 
-```bash
-# Set MongoDB URI
-vercel env add MONGODB_URI production
+### **Build Errors:**
+- Check Vercel build logs
+- Verify package.json scripts
+- Ensure all dependencies are listed
 
-# Set Node environment
-vercel env add NODE_ENV production
+### **Runtime Errors:**
+- Check function logs in Vercel dashboard
+- Verify environment variables
+- Test API endpoints manually
 
-# Redeploy to apply environment variables
-vercel --prod
-```
+### **CORS Issues:**
+- Ensure `ALLOWED_ORIGINS` matches frontend URL exactly
+- Check for trailing slashes
+- Verify HTTPS protocol
 
-### 5. Custom Domain (Optional)
+## 📊 **Performance Optimization**
 
-1. Go to your Vercel dashboard
-2. Select your project
-3. Go to Settings > Domains
-4. Add your custom domain
+### **Backend:**
+- Function timeout set to 30 seconds
+- Region set to `iad1` (US East)
+- Memory storage for file uploads
 
-## 📁 Project Structure
+### **Frontend:**
+- Static build optimization
+- Security headers configured
+- Proper routing for SPA
 
-```
-niman2-platform/
-├── client/                 # React frontend
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── .env.production
-├── server/                 # Serverless API
-│   ├── api/
-│   │   ├── health.js      # Health check endpoint
-│   │   ├── submit.js      # Submit project endpoint
-│   │   └── submissions.js # Get submissions endpoint
-│   └── package.json
-├── vercel.json            # Vercel configuration
-└── VERCEL_DEPLOYMENT.md   # This file
-```
+## 🎯 **Final URLs**
 
-## 🔧 API Endpoints
-
-After deployment, your API will be available at:
-
-- **Health Check**: `https://your-app.vercel.app/api/health`
-- **Submit Project**: `POST https://your-app.vercel.app/api/submit`
-- **Get Submissions**: `GET https://your-app.vercel.app/api/submissions`
-
-## 🛠 Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start frontend (from client directory)
-cd client
-npm start
-
-# The API endpoints will work automatically with Vercel CLI
-vercel dev
-```
-
-## 📊 Monitoring
-
-### Vercel Analytics
-Enable Vercel Analytics in your dashboard for:
-- Page views and performance metrics
-- Core Web Vitals
-- Real user monitoring
-
-### Function Logs
-View serverless function logs in:
-- Vercel Dashboard > Functions tab
-- Real-time logs during development with `vercel dev`
-
-## 🔒 Security Features
-
-- **CORS Protection**: Configured for your domain
-- **Rate Limiting**: 100 requests per 15 minutes per IP
-- **Input Validation**: Server-side validation for all inputs
-- **Security Headers**: XSS protection, content type validation
-- **Environment Variables**: Secure storage of sensitive data
-
-## 🚨 Troubleshooting
-
-### Common Issues:
-
-1. **Database Connection Failed**
-   - Check MongoDB URI in environment variables
-   - Ensure database user has correct permissions
-   - Verify network access in MongoDB Atlas
-
-2. **API Routes Not Working**
-   - Ensure `vercel.json` is in project root
-   - Check function logs in Vercel dashboard
-   - Verify API files are in `server/api/` directory
-
-3. **Build Failures**
-   - Check Node.js version compatibility
-   - Ensure all dependencies are listed in `package.json`
-   - Review build logs in Vercel dashboard
-
-### Debug Commands:
-
-```bash
-# Check deployment status
-vercel ls
-
-# View function logs
-vercel logs
-
-# Test API endpoints locally
-vercel dev
-```
-
-## 📈 Performance Optimization
-
-- **Static Assets**: Automatically optimized by Vercel
-- **Edge Caching**: API responses cached at edge locations
-- **Serverless Functions**: Auto-scaling based on demand
-- **Image Optimization**: Built-in image optimization
-- **Bundle Analysis**: Use `npm run build` to analyze bundle size
-
-## 🔄 Updates and Maintenance
-
-1. **Automatic Deployments**: Push to main branch for auto-deploy
-2. **Environment Updates**: Use Vercel dashboard or CLI
-3. **Database Maintenance**: Monitor MongoDB Atlas metrics
-4. **Performance Monitoring**: Check Vercel Analytics regularly
-
-## 📞 Support
-
-- **Vercel Documentation**: [vercel.com/docs](https://vercel.com/docs)
-- **MongoDB Atlas Support**: [docs.atlas.mongodb.com](https://docs.atlas.mongodb.com)
-- **Project Issues**: Create an issue in your GitHub repository
+After successful deployment:
+- **Backend**: `https://nirman-2-2025-backend.vercel.app`
+- **Frontend**: `https://nirman-2-2025-frontend.vercel.app`
+- **API Endpoint**: `https://nirman-2-2025-backend.vercel.app/api`
 
 ---
 
-**🎉 Your Niman2.0 Platform is now ready for production on Vercel!**
+**Your Nirman-2_2025 submission portal is now ready for production! 🚀**

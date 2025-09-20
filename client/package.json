@@ -13,9 +13,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run optimize",
+    "build": "react-scripts build",
     "build:vercel": "react-scripts build",
-    "optimize": "echo 'Build optimization complete'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "analyze": "npm run build && npx serve -s build"
